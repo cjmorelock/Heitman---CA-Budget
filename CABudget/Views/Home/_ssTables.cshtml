@@ -1,0 +1,61 @@
+﻿@model BudgetUpload
+
+@{ 
+    var budgetLines = Model.BudgetLines;
+    if (budgetLines == null) { budgetLines = new List<BudgetLine>(); }
+
+    var stats = Model.Stats;
+    if (stats == null) { stats = new BLStats(budgetLines); }
+    
+    var invalidBudgetLinesByDepartment = budgetLines.Where(x => !x.IsValid).GroupBy(x => x.Department);
+    var statsByDepartment = stats.GroupBy(x => x.Department);
+}
+
+<ul class="nav nav-tabs">
+    @*tabs for each sheet(/department)*@
+    @for (int i = 0; i < Model.Sheets.Count; i++) {
+        <li class="@(i==0?"active":"")">
+            <a href="#tab@(i)" data-toggle="tab">
+                <div class="ssName">
+                    @Model.Sheets[i]
+                </div>
+            </a>
+        </li>
+    }
+</ul>
+    
+<div class="tab-content" style="position:relative; border:none;padding-top:15px;">
+    @for (int i = 0; i < Model.Sheets.Count; i++) {
+        var sheet = Model.Sheets[i];
+    <div id="tab@(i)" class="tab-pane clear-fix fade@(i == 0 ? " in active" : "")">
+        @if (budgetLines.Count == 0) {
+            @*show expected columns on GET*@
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        @foreach (var c in Model.Columns) {
+                            <th>@c</th>
+                        }
+                    </tr>
+                </thead>
+            </table>
+        } else {
+            @* Add stats for this sheet here *@
+            Html.RenderPartial("_stats", statsByDepartment.FirstOrDefault(x => x.Key == sheet));
+
+            @* Show invalid budget lines for this sheet *@
+            var invalidBLS = invalidBudgetLinesByDepartment.FirstOrDefault(x => x.Key == sheet);
+            if (invalidBLS != null) {
+            <div class="invalid-budget-lines">
+                <h4>Invalid Budget Lines</h4>
+                @{
+                    var bltableModel = new BudgetLinesTable() { BudgetLines = invalidBLS, Columns = Model.Columns };
+                    Html.RenderPartial("_bls", bltableModel);
+                }
+            </div>
+            }
+        }
+    </div>
+    }
+</div>
+

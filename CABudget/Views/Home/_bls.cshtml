@@ -1,0 +1,39 @@
+﻿@model BudgetLinesTable
+
+@if (Model != null && Model.BudgetLines != null && Model.Columns != null) {
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Row</th>
+                @foreach (var c in Model.Columns) {
+                    <th>@c</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var bl in Model.BudgetLines) {
+                <tr>
+                    <td>@bl.RowNumber</td>
+                    <td class="@(bl.InvalidColumns.Contains(1) ? "alert-danger" : "")">@bl.Year</td>
+                    <td>@bl.LedgerCurrency</td>
+                    <td>@bl.Entity</td>
+                    <td class="@(bl.InvalidColumns.Contains(4) ? "alert-danger" : "")">@bl.Account</td>
+                    <td>@bl.State</td>
+                    <td>@bl.subAcct_1</td>
+                    <td>@bl.subAcct_2</td>
+                    <td class="@(bl.InvalidColumns.Contains(8) ? "alert-danger" : "")">@bl.Vendor</td>
+                    @for (int j = 0; j < 12; j++) {
+                        int pos = bl.InvalidColumns.IndexOf(j + 9);
+                        <td class="text-right@(pos>=0?" alert-danger":"")"
+                            title="@(pos>=0?bl.InvalidMessages[pos]:"")">
+                            @bl.Amounts[j].ToString("#,##0;(#,##0)")
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

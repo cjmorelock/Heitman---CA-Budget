@@ -1,0 +1,70 @@
+﻿@model BudgetUpload
+@{
+    ViewBag.Title = "Upload Budget File";
+}
+
+<style type="text/css">
+    .invalid-budget-lines h4 {
+        margin: 5px 0;
+        padding: 10px 15px;
+        background-color: #a94442;
+        color: #fff;
+    }
+</style>
+ 
+<h2>@ViewBag.Title</h2>
+<h3>Use this page to transfer Budget Lines from Excel</h3>
+<hr />
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" })) {
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div style="border: 1px solid grey; padding: 10px;">
+            <p>Use this page to transfer budget info from an Excel workbook. Each sheet in the uploaded workbook is expected to have the columns shown below.</p>
+            <ol>
+                <li>Select your Excel workbook using the "Choose a file" link below – or, you can drag and drop it!</li>
+                <li>Verify that all configured validation checks pass and review all provided revenue and expense reports.</li>
+                <li>Press “Save” to complete the data transfer.  Note that the Save button will only appear if all validation checks pass.</li>
+            </ol>
+            <div class="ssDropContainer">
+                <table id="ssDrop" style="width: 100%">
+                    <tr>
+                        <td style="height:100px; width:100%; text-align: center;">
+                            @*<img src="~/Images/upload.png" />*@
+                            <input id="BudgetFile" type="file" name="BudgetFile" />
+                            <label for="BudgetFile">Choose a file</label>
+                            or drag it here.
+                        </td>
+                    </tr>
+                </table>
+                <div id="ssMessage"></div>
+            </div>
+            <div class="form-group save-container" style="display: none;">
+                <div class="col-sm-offset-4 col-sm-2">
+                    <input id="Save" name="Save" type="submit" value="Save" class="btn btn-primary form-control" />
+                    @*<input id="Save" name="Save" type="submit" value="Update" class="btn btn-default" />*@
+                </div>
+                <div class="col-sm-2"><a href="/" class="btn btn-default form-control">Cancel</a></div>
+            </div>
+
+            <div style="position:relative; min-height:150px;">
+                <div id="ssLoading" style="text-align:center; display:none; position:absolute; margin: 0 auto;left:0; right:0;"><img src="~/Images/loading.gif" /><br /><span class="caption">Loading...</span></div>
+                <div id="ssContainer">
+                    @{Html.RenderPartial("_ssTables", Model);}
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            SmartSheet.Init();
+        });
+    </script>
+}
+

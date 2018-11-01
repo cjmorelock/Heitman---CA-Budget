@@ -1,0 +1,55 @@
+﻿/*  This "smartsheet" functionality was lifted from the DealWorkflow/Acq Dashboard application. Here it is a bit of a misnomer,
+    but what it does primarily is style a page conting a box onto which a file may be dropped to upload it to the server.
+*/
+    .ssDropContainer {
+        position: relative;
+        overflow:auto;
+        border-top: 1px solid #acaeb0;
+        border-bottom: 1px solid #acaeb0;
+        margin: 0px 0px 10px 0px;
+        width: 100%;
+    }
+    #ssDrop { background: url(../Images/upload2.png) no-repeat center rgba(172,174,176,.5);}
+    #ssDrop.over {
+        background-color: rgba(0,125,186,.2) !important;
+    }
+
+    #BudgetFile { width: 0.1px;	height: 0.1px;	opacity: 0;	overflow: hidden;	position: absolute;	z-index: -1;}
+    #BudgetFile + label { color: #002554; cursor:pointer; font-weight: 400; }
+    #BudgetFile + label:hover,
+    #BudgetFile + label:active {text-decoration: underline; color: #007DBA;}
+    #BudgetFile:focus + label { outline: 1px dotted grey; }
+
+    #ssMessage {
+        height: 100px;
+        position: absolute;
+        top: 0;
+        left: 5px;
+    }
+
+
+td {
+    border-width: 0px;
+    border-style: none;
+    border-color: transparent;
+    border-collapse: collapse;
+}
+
+table.data-table {
+    width: 100%;
+    border: none;
+}
+
+table.dataTable tbody tr.odd {
+    background-color: #f9f9f9;
+}
+table.dataTable tbody td.sorting_1 {            
+    background-color: #f9f9f9;
+}
+table.dataTable tbody th, table.dataTable tbody td {
+    padding: 6px 10px;
+}
+
+.tab-content {
+    overflow-x: auto;
+}

@@ -1,0 +1,70 @@
+﻿/*This is the styling for the Revenue/Expsenses stats boxes that are display for each department/business unit when uploading the budget file*/ 
+
+.stat-container {
+    box-sizing: border-box;
+}
+
+.stat-box {
+    display: inline-block;
+    /*width: 100%;*/
+    width: 599px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    border: 2px solid #007dba;
+    border-radius: 5px 5px;
+    box-shadow: #808080 6px 6px 10px;
+}
+
+    .stat-box h1, .stat-box h2, .stat-box h3, .stat-box h4, .stat-box h5, .stat-box h6 {
+        margin: 0;
+        padding: 10px 15px;
+        border-bottom: 1px solid #007dba;
+        background-color: #007dba;
+        color: #fff;
+    }
+
+    .stat-box > div {
+        height: 160px;
+        overflow-y: auto;
+        /*padding: 6px 10px;*/
+    }
+
+.total {
+    border-top: 1px solid #007dba;
+    border-bottom: 4px double #007dba;
+    padding-top: 4px;
+    margin: 0;
+}
+
+.account {
+    padding-top: 4px;
+    font-size: .8em;
+    font-weight: 600;
+    color: #002554;
+    border-bottom: 1px solid #007dba;
+}
+
+.stat-box table {
+    margin: 10px 0;
+    padding: 0;
+    width: 100%;
+}
+
+    .stat-box table th {
+        font-size: 1.1em;
+        color: #002554;
+    }
+
+.stat-box th, .stat-box td {
+    width: 50%;
+}
+
+/*@media (min-width: 630px) {
+    .stat-box {
+        width: 600px;
+        margin-right: 15px;
+    }
+        .stat-box > div {
+            height: 160px;
+        }
+}*/

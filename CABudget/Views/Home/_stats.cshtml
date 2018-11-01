@@ -1,0 +1,70 @@
+﻿@model IEnumerable<StatLine>
+
+@{ 
+    var StatsByCurrency = Model.GroupBy(x => x.LedgerCurrency);
+}
+
+<div class="stat-container">
+    @foreach (var group in StatsByCurrency) {
+        var revenueLines = group.Where(x => x.StatLineType == slType.Revenue).OrderBy(x => x.Amount);
+        var expenseLines = group.Where(x => x.StatLineType == slType.Expense).OrderByDescending(x => x.Amount);
+    <div class="stat-box">
+        <h4>Revenue and Expenses by Account in <b>@group.Key</b></h4>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="total">
+                                <td>Total</td>
+                                <td class="text-right">@(revenueLines.Select(x => x.Amount).Sum().ToString("#,##0;(#,##0)"))</td>
+                            </tr>
+                            <tr>
+                                <td class="account">Account</td>
+                                <td></td>
+                            </tr>
+                            @foreach (var stat in revenueLines) {
+                            <tr>
+                                <td>@stat.Account</td>
+                                <td class="text-right">@stat.Amount.ToString("#,##0;(#,##0)")</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Expenses</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="total">
+                                <td>Total</td>
+                                <td class="text-right">@(expenseLines.Select(x => x.Amount).Sum().ToString("#,##0;(#,##0)"))</td>
+                            </tr>
+                            <tr>
+                                <td class="account">Account</td>
+                                <td></td>
+                            </tr>
+                            @foreach (var stat in expenseLines) {
+                            <tr>
+                                <td>@stat.Account</td>
+                                <td class="text-right">@stat.Amount.ToString("#,##0;(#,##0)")</td>
+                            </tr>
+                            }
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>
