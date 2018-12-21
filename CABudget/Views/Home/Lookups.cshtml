@@ -1,0 +1,71 @@
+﻿@model Lookups
+@{
+    ViewBag.Title = "Lookups";
+}
+<style type="text/css">
+    .lookups h4 {
+        margin: 5px 0;
+        padding: 10px 15px;
+        background-color: #97b498;
+        color: rgba(33, 37, 41, 1);
+    }
+    .lookups.vendors h4 {
+        background-color: #73b0b9;
+    }
+</style>
+<p></p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="lookups">
+                <h4>Accounts</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Accounts) {
+                            <tr>
+                                <td>@Html.DisplayFor(x => item.Id)</td>
+                                <td>@Html.DisplayFor(x => item.Name)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="lookups vendors">
+                <h4>Vendors</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Vendors) {
+                            <tr>
+                                <td>@Html.DisplayFor(x => item.Id)</td>
+                                <td>@Html.DisplayFor(x => item.Name)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $(".data-table").DataTable();
+        });
+    </script>
+}

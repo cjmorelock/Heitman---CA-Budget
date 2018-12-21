@@ -19,7 +19,8 @@ namespace CABudget.Model.Validation {
         public VendorValidRule(IEnumerable<string> validVendors = null) {
             ValidVendors = validVendors == null
             ? null
-            : new SortedSet<string>(validVendors);
+            : new SortedSet<string>(validVendors, StringComparer.CurrentCultureIgnoreCase);
+
         }
         public bool IsValid(BudgetLine bl) {
             if (!string.IsNullOrEmpty(bl.Vendor) && (ValidVendors == null || ValidVendors.Contains(bl.Vendor))) return true;

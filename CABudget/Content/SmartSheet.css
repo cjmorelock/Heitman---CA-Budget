@@ -1,5 +1,5 @@
 ﻿/*  This "smartsheet" functionality was lifted from the DealWorkflow/Acq Dashboard application. Here it is a bit of a misnomer,
-    but what it does primarily is style a page conting a box onto which a file may be dropped to upload it to the server.
+    but what it does primarily is style a page containing a box onto which a file may be dropped to upload it to the server.
 */
     .ssDropContainer {
         position: relative;
@@ -21,10 +21,12 @@
     #BudgetFile:focus + label { outline: 1px dotted grey; }
 
     #ssMessage {
-        height: 100px;
+        /*height: 100px;*/
         position: absolute;
         top: 0;
-        left: 5px;
+        left: 0;
+        padding-left: 5px;
+        width: 44%;
     }
 
 

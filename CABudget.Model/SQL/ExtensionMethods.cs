@@ -21,7 +21,7 @@ namespace CABudget.Model.SQL {
                 { typeof(Int32),          (reader, index) => reader.GetInt32(index) },
                 { typeof(Int64),          (reader, index) => reader.GetInt64(index) },
                 { typeof(Guid),           (reader, index) => reader.GetGuid(index) },
-                { typeof(String),         (reader, index) => reader.GetString(index) },
+                { typeof(String),         (reader, index) => Convert.ToString(reader.GetValue(index)) },
                 { typeof(Byte[]),         (reader, index) => GetBytes(reader, index) }
             };
 

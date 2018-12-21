@@ -16,12 +16,8 @@ namespace CABudget.Model.Validation {
 
             _blRules = new List<IBudgetLineValidationRule>();
             _blRules.Add(new YearValidRule());
-            // TO DO: Flip the following once we have the Account and Vendor lookups
-            //_blRules.Add(new AccountValidRule(uow.Accounts.GetList(x => true).Select(x => x.Id)));
-            //_blRules.Add(new VendorValidRule(uow.Vendors.GetList(x => true).Select(x => x.Id)));
-            _blRules.Add(new AccountValidRule());
-            _blRules.Add(new VendorValidRule());
-
+            _blRules.Add(new AccountValidRule(uow.Accounts.GetList(x => true).Select(x => x.Id)));
+            _blRules.Add(new VendorValidRule(uow.Vendors.GetList(x => true).Select(x => x.Id)));
         }
 
         public List<ValidationResult> ValidationSummary {
@@ -60,13 +56,15 @@ namespace CABudget.Model.Validation {
             }
         }
 
-        // IsValid = true if all Validation Rules pass for all Budget Lines
+        /// <summary>
+        /// IsValid = true if all Validation Rules pass for all Budget Lines
+        /// </summary>
         public bool IsValid {
             get {
                 bool valid = true;
 
                 foreach (var bl in _budgetLines) {
-                    bool blValid = true;
+                    bool blValid = bl.IsValid; // bl might already be invalid!
                     foreach (var rule in _blRules) {
                         blValid = rule.IsValid(bl) && blValid;
                     }

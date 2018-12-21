@@ -12,6 +12,7 @@ namespace CABudget.Model {
     public interface IBudgetLineRepository : IRepository<BudgetLine> {
         void AddBulk(IEnumerable<BudgetLine> items);
         void DeleteAll();
+        BudgetLineCommitResult CommitAll(string performedBy);
     }
     
 }

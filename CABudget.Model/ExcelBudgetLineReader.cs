@@ -21,6 +21,11 @@ namespace CABudget.Model {
         protected ExcelWorksheet currentSheet;
         protected int currentRow;
 
+        /// <summary>
+        /// Reads an Execel file passed as a stream
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="sheetNames">omit or set null to process all sheets; include to process only specified sheets</param>
         internal ExcelBudgetLineReader(Stream input, IEnumerable<string> sheetNames=null) {
             package = new ExcelPackage(input);
             
@@ -49,18 +54,20 @@ namespace CABudget.Model {
         public BudgetLine Project() {
             var item = new BudgetLine();
             int i = 0;
-            item.Year = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.LedgerCurrency = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.Entity = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.Account = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.State = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.subAcct_1 = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.subAcct_2 = currentSheet.Cells[currentRow, ++i].GetValue<string>();
-            item.Vendor = currentSheet.Cells[currentRow, ++i].GetValue<string>();
+            item.Year = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.LedgerCurrency = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.Entity = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.Account = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.State = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.subAcct_1 = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.subAcct_2 = currentSheet.Cells[currentRow, ++i].Text.Trim();
+            item.Vendor = currentSheet.Cells[currentRow, ++i].Text.Trim();
 
             for(int j=0; j<12; j++) {
                 // I do validation for amounts here!
-                string strAmt = currentSheet.Cells[currentRow, ++i].GetValue<string>();
+                object valC = currentSheet.Cells[currentRow, ++i].Value;
+                string strAmt = Convert.ToString(valC);
+                //string strAmt = currentSheet.Cells[currentRow, ++i].Text;
                 decimal amt;
                 if (decimal.TryParse(strAmt, out amt)) {
                     item.Amounts[j] = Math.Round(amt, 2);
@@ -76,7 +83,7 @@ namespace CABudget.Model {
         }
 
         private bool currentRowIsEmpty () {
-            var val = currentSheet.Cells[currentRow, 1].GetValue<string>();
+            var val = currentSheet.Cells[currentRow, 1].Text.Trim();
             return string.IsNullOrEmpty(val);
         }
 

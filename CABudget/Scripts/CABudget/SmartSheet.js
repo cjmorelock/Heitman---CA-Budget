@@ -5,21 +5,21 @@
         e.preventDefault();
         e.stopPropagation();
         return false;
-    }
+    };
 
     var dragenter_file = function (e) {
         cancel(e);
-    }
+    };
 
     var dragover_file = function (e) {
         cancel(e);
         this.classList.add("over");
-    }
+    };
 
     var dragleave_file = function (e) {
         cancel(e);
         this.classList.remove("over");
-    }
+    };
 
     var drop_file = function (e) {
         cancel(e);
@@ -34,7 +34,7 @@
                 }
             }
         }
-    }
+    };
 
     var change_file = function (e) {
         cancel(e);
@@ -43,8 +43,35 @@
         if (droppedFiles) {
             refreshTable(droppedFiles[0]);
         }
+    };
+
+    var ajax_success = function (data, textStatus, jqXHR) {
+        // data = {"isError" : <true|false>, "message" : <message>, "html" : <html>}
+        $("#ssMessage").html(data.message);
+        if (data.html) {
+            $("#ssContainer").html(data.html);
+            // DataTable jQuery plugin adds searching, paging, sorting to <table>s
+            $("#ssContainer .data-table").DataTable({
+                "ordering": false
+            });
+        }
+    };
+
+    var ajax_error = function (jqXHR, textStatus, errorThrown) {
+        // Log the error, show an alert, whatever works for you
+        $(".save-container").hide();
+        $("#ssMessage").removeClass("alert-success").addClass("alert-danger");
+        $("#ssMessage").html(textStatus + " : " + errorThrown);
+        $("#ssContainer").html("");
     }
 
+    var ajax_complete = function (jqXHR, textStatus) {
+        $("#ssLoading").fadeOut(600);
+        $("#ssContainer").fadeIn(1000);
+        $("input[type='submit']").attr("disabled", false);
+    }
+
+    /* Call when file is selected/dropped to be uploaded. */
     var refreshTable = function (f) {
         // Internet Explorer's FormData object *only* provides an append() method, not the set() method Chrome provides.
         var $form = $("form"); // assume only 1 form
@@ -54,7 +81,7 @@
 
         // add dropped/uploaded file
         ajaxData.append("BudgetFile", f);
-        
+
         $("#ssContainer").hide();
         $("#ssLoading").show();
         $.ajax({
@@ -65,43 +92,30 @@
             cache: false,
             contentType: false,
             processData: false,
-            complete: function () {
-                $("#ssLoading").fadeOut(600);
-                $("#ssContainer").fadeIn(1000);
-            },
-            success: function (data) {
+            complete: ajax_complete,
+            success: function (data, textStatus, jqXHR) {
                 // data = {"isError" : <true|false>, "message" : <message>, "html" : <html>}
-                $("#ssMessage").html(data.message);
-                $("#ssContainer").html(data.html);
-                // DataTable jQuery plugin adds searching, paging, sorting to <table>s
-                $("#ssContainer .data-table").DataTable({
-                    "ordering": false
-                });
+                ajax_success(data, textStatus, jqXHR);
+
                 if (data.isError) {
-                    $(".save-container").hide(); // hide the Save button
-                    $("#ssMessage").addClass("text-danger");
+                    $(".save-container").hide(); // data did not validate, hide the Save button
+                    $("#ssMessage").removeClass("alert-success").addClass("alert-danger");
 
                 } else {
-                    $("#ssMessage").removeClass("text-danger");
-                    $(".save-container").show();
+                    $(".save-container").show(); // data validation passed, show the Save button
+                    $("#ssMessage").removeClass("alert-danger").addClass("alert-success");
                     notify();
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                // Log the error, show an alert, whatever works for you
-                $(".save-container").hide();
-                $("#ssMessage").addClass("text-danger");
-                $("#ssMessage").html(textStatus + " : " + errorThrown);
-                $("#ssContainer").html("");
-            }
+            error: ajax_error
         });
-    }
+    };
     
     var notify = function () {
         for (var i = 0; i < subscribers.length; i++) {
             subscribers[i].call(null); // subscriber function is called with no parameters. We're just notifying, not passing data
         }
-    }
+    };
 
     return {
         Init: function () {
@@ -121,40 +135,31 @@
                 cancel(event);
                 var $form = $(this);
 
+                $form.find("input[type='submit']").attr("disabled", true); // prevent double-click double-posting
+
                 var ssData = $form.serialize(); // not sure I even need this
-                
-                // submit data
+
+                // submit data - Called when the "Commit & Refresh SL Cube" button is pressed
                 $.ajax({
                     url: $form.attr("action"),
                     type: $form.attr("method"),
                     data: ssData,
                     //dataType: "json",
                     cache: false,
-                    complete: function () {
-                        $("#ssLoading").fadeOut(600);
-                        $("#ssContainer").fadeIn(1000);
-                        $(".save-container").hide(); // hide the Save button
-                    },
-                    success: function (data) {
+                    complete: ajax_complete,
+                    success: function (data, textStatus, jqXHR) {
                         // data = {"isError" : <true|false>, "message" : <message>, "html" : <html>}
-                        $("#ssMessage").html(data.message);
-                        $("#ssContainer").html(data.html);
-                        // DataTable jQuery plugin adds searching, paging, sorting to <table>s
-                        $("#ssContainer .data-table").DataTable({
-                            "ordering": false
-                        });
+                        ajax_success(data, textStatus, jqXHR);
+
                         if (data.isError) {
-                            $("#ssMessage").addClass("text-danger");
-                            $(".save-container").hide();
+                            $(".save-container").show(); // commit failed, allow re-try later!
+                            $("#ssMessage").removeClass("alert-success").addClass("alert-danger");
                         } else {
-                            $("#ssMessage").removeClass("text-danger");
-                            $(".save-container").show();
+                            $(".save-container").hide(); // commit worked, hide the Save button
+                            $("#ssMessage").removeClass("alert-danger").addClass("alert-success");
                         }
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        // Log the error, show an alert, whatever works for you
-                        $("#ssMessage").html(textStatus + " : " + errorThrown);
-                    }
+                    error: ajax_error
                 });
             });
 
@@ -163,5 +168,5 @@
         SubscribeTableRefresh: function (fn) {
             subscribers.push(fn);
         }
-    }
+    };
 })();

@@ -8,9 +8,13 @@ using System.Threading.Tasks;
 namespace CABudget.Model.SQL {
     public class UnitOfWork : IUnitOfWork {
         // TO DO: may need to add additional connection strings here somewhere for Account and Vendor lookups
-        public readonly string ConnectionString;
+        public readonly string ConnectionString;     // this is for the SL database
+        public readonly string ConnectionStringHI;   // this is where the cube lock table lives
+        public readonly string ConnectionStringMSDB; // this is where the sp_start_job stored proc lives
         public UnitOfWork () {
             ConnectionString = ConfigurationManager.ConnectionStrings["SLConnection"].ConnectionString;
+            ConnectionStringHI = ConfigurationManager.ConnectionStrings["HIConnection"].ConnectionString;
+            ConnectionStringMSDB = ConfigurationManager.ConnectionStrings["MSDBConnection"].ConnectionString;
         }
 
         private IBudgetLineRepository _blr;

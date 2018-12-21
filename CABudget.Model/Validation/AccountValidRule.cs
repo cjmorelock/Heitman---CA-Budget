@@ -17,6 +17,10 @@ namespace CABudget.Model.Validation {
         }
         protected readonly SortedSet<string> ValidAccounts;
 
+        /// <summary>
+        /// ctr
+        /// </summary>
+        /// <param name="validAccounts">if null, then any non-empty account will be valid; otherwise account must be found in validAccounts collection</param>
         public AccountValidRule (IEnumerable<string> validAccounts = null) {
             ValidAccounts = validAccounts == null
                 ? null
